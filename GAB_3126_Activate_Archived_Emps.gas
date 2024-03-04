@@ -1,0 +1,33 @@
+Program.Sub.ScreenSU.Start
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+'This program is going to move archived employees from PYRL_EMP_HIST back to EMPLOYEE_MSTR
+
+V.Local.sFile.Declare(String)
+V.Local.iRet.Declare(Long)
+
+F.ODBC.Connection!con.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+
+F.ODBC.Connection!con.Execute("INSERT INTO EMPLOYEE_MSTR SELECT * FROM PYRL_EMP_HIST;")
+F.Intrinsic.UI.SleepMS(15)
+F.ODBC.Connection!con.Execute("DELETE FROM PYRL_EMP_HIST;")
+
+F.Intrinsic.String.Concat("WMAST",V.Caller.CompanyCode,V.Local.sFile)
+F.Automation.Pervasive.RebuildFile(V.Local.sFile,V.Local.iRet)
+
+F.Intrinsic.String.Concat("WMSTH",V.Caller.CompanyCode,V.Local.sFile)
+F.Automation.Pervasive.RebuildFile(V.Local.sFile,V.Local.iRet)
+
+F.ODBC.Connection!con.Close
+
+Program.Sub.Main.End
+
+Program.Sub.Comments.Start
+${$0$}$GAB_13856_Activate_Achived_Emps$}$SUPERVSR$}$12/04/2015
+Program.Sub.Comments.End
+
